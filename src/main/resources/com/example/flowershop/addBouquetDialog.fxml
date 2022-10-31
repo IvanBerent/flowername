@@ -1,17 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<HBox xmlns="http://javafx.com/javafx"
+<VBox spacing="20" style="-fx-padding: 10"
+      xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.flowershop.addBouquetController"
+      fx:controller="com.example.flowershop.AddBouquetController"
       prefHeight="400.0" prefWidth="600.0">
 
-    <Button fx:id="save" text="Save" onAction="#save"/>
-    <Button fx:id="cancel" text="Cancel" onAction="#cancel"/>
-</HBox>
+    <HBox spacing="30">
+        <VBox spacing="20">
+            <!-- name -->
+            <VBox spacing="5">
+                <Text text="Enter name:" fx:id="nameText"/>
+                <TextField promptText="Name" fx:id="nameField" maxWidth="200"/>
+            </VBox>
+            <!-- description -->
+            <VBox spacing="5">
+                <Text text="Enter description:" fx:id="descText"/>
+                <TextArea promptText="Description" fx:id="descriptionField" maxWidth="200" minHeight="180"
+                          wrapText="true"/>
+            </VBox>
+        </VBox>
+
+        <!-- sell price -->
+        <VBox spacing="5">
+            <Text text="Sell price:" fx:id="sellPriceText"/>
+            <TextField promptText="0.00" fx:id="sellPriceField"/>
+        </VBox>
+    </HBox>
+
+    <ScrollPane minHeight="200" vbarPolicy="ALWAYS" fx:id="scrollPane">
+        <!-- adding the flower/s -->
+        <VBox spacing="20" fx:id="scrollPaneContent">
+            <HBox spacing="20">
+                <ComboBox fx:id="comboBox">
+
+                </ComboBox>
+                <TextField promptText="amount"/>
+            </HBox>
+            <Button fx:id="addFlowerBtn" text="+" style="-fx-font-size: 14" onAction="#addBouquet"/>
+        </VBox>
+    </ScrollPane>
+    <!-- option buttons -->
+    <HBox spacing="20">
+        <Button fx:id="saveBtn" text="Save" onAction="#save"/>
+        <Button fx:id="cancelBtn" text="Cancel" onAction="#cancel"/>
+    </HBox>
+</VBox>

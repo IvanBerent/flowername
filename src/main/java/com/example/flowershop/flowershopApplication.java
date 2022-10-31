@@ -8,10 +8,22 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class flowershopApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
+        FlowershopDAO flowershopDAO = new FlowershopDAO();
+        flowershopDAO.FlowershopDAO();
+
+        //flowershopDAO.addFlowerColumnToBouquetTable("kamille");
+        //flowershopDAO.addFlowerColumnToBouquetTable("löwenzahn");
+        //flowershopDAO.deleteFlowerColumnFromBouquetTable("Rose");
+
+        //flowershopDAO.insertBouquet();
+
+        //flowershopDAO.clearFlowerTable();
+        //flowershopDAO.clearBouquetTable();
         FXMLLoader fxmlLoader = new FXMLLoader(flowershopApplication.class.getResource("flowershopView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 700);
         stage.setTitle("Flowershop");
         stage.setScene(scene);
         stage.show();

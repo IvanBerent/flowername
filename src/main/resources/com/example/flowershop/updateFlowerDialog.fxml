@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<VBox spacing="20" style="-fx-padding: 10"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.flowershop.UpdateFlowerController"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <Text fx:id="flowerText" />
+
+    <VBox spacing="5">
+        <Text text="Amount:"/>
+        <HBox>
+            <Button text="-" style="-fx-font-size: 14" minWidth="30" onAction="#minus"/>
+            <TextField fx:id="amountField" minHeight="29" maxWidth="50"/>
+            <Button text="+" style="-fx-font-size: 14" minWidth="30" onAction="#plus" />
+        </HBox>
+    </VBox>
+
+    <!-- option buttons -->
+    <HBox spacing="20">
+        <Button text="Update" onAction="#update" />
+        <Button fx:id="cancelBtn" text="Close" onAction="#cancel" />
+    </HBox>
+
+</VBox>

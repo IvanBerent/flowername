@@ -7,16 +7,54 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<VBox xmlns="http://javafx.com/javafx"
+<VBox spacing="20" style="-fx-padding: 10"
+      xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.flowershop.addFlowerController"
+      fx:controller="com.example.flowershop.AddFlowerController"
       prefHeight="400.0" prefWidth="600.0">
 
-    <HBox spacing="20">
-        <Button fx:id="save" text="Save" onAction="#save"/>
-        <Button fx:id="cancel" text="Cancel" onAction="#cancel"/>
+
+    <HBox spacing="30">
+        <VBox spacing="20">
+            <!-- name -->
+            <VBox spacing="5">
+                <Text text="Enter name:" fx:id="nameText"/>
+                <TextField promptText="Name" fx:id="nameField" maxWidth="200"/>
+            </VBox>
+            <!-- description -->
+            <VBox spacing="5">
+                <Text text="Enter description:" fx:id="descriptionText"/>
+                <TextArea promptText="Description" fx:id="descriptionField" maxWidth="200" minHeight="180" wrapText="true"/>
+            </VBox>
+        </VBox>
+
+        <VBox spacing="20">
+            <!-- purchase price -->
+            <VBox spacing="5">
+                <Text text="Purchase price" fx:id="purchasePriceText"/>
+                <TextField promptText="0.00" fx:id="purchasePriceField" />
+            </VBox>
+            <!-- sell price -->
+            <VBox spacing="5">
+                <Text text="Sell price:" fx:id="sellPriceText"/>
+                <TextField promptText="0.00" fx:id="sellPriceField" />
+            </VBox>
+            <!-- amount -->
+            <VBox spacing="5">
+                <Text text="Amount:" />
+                <HBox>
+                    <Button text="-" style="-fx-font-size: 14" minWidth="30" onAction="#minus"/>
+                    <TextField text="0" fx:id="amountField" minHeight="29" maxWidth="50"/>
+                    <Button text="+" style="-fx-font-size: 14" minWidth="30" onAction="#plus" />
+                </HBox>
+            </VBox>
+        </VBox>
     </HBox>
 
-    <Text text="testetstestretsteste" />
+    <!-- option buttons -->
+    <HBox spacing="20">
+        <Button fx:id="saveBtn" text="Save" onAction="#save"/>
+        <Button fx:id="cancelBtn" text="Close" onAction="#cancel"/>
+    </HBox>
 </VBox>
 
