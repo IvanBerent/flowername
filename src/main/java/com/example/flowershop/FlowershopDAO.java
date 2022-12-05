@@ -1,6 +1,7 @@
 package com.example.flowershop;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,20 +25,17 @@ public class FlowershopDAO {
                 "sellPrice      FLOAT," +
                 "amount         INTEGER);";
 
-        // TODO: herausfinden wie wir die anzahl der blumen aus denen ein Straus besteht speichern
-        // Nicht atomar: wir speichern in eine Spalte die anzahl der Blumen, trennen mit Komma und lesen dann aus
-        // Atomar: wir erstellen eine neue Tabelle wo die Anzahl der Blumen in extra Spalten gespeichert wird
-        //         zu der dazugehörenden ID eines Straus
+        final String createBouquetCompositionTable = "CREATE TABLE IF NOT EXISTS compositions(" +
+                "flower         INTEGER," +
+                "amount         INTEGER," +
+                "bouquet        INTEGER);";
 
-        // bessere idee gefunden. Sobald eine neue blume dazukommt erstellen wir eine neu Spalte bei den sträusen
-        // da steht bei default 0, aber wenn wir diesem Strauß blumen zuweisen, ändert sich auch die zahl.
-        // wenn wir eine Blume aus flowers löschen löscht sich auch die Spalte bei bouquets... oder gleich der ganze
-        // straus, weiß noch nicht was mehr sinn macht <-- können wir eigentlich auch in einer extra tabelle lösen
 
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
             statement.execute(createFlowerTable);
             statement.execute(createBouquetTable);
+            statement.execute(createBouquetCompositionTable);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -150,17 +148,32 @@ public class FlowershopDAO {
     }
 
     //   Bouquet
-    public void getBouquet() {
-        String SQL = "";
+    public void getBouquet(int id) {
+        String SQL = "SELECT * FROM bouquets WHERE bouquetID=?";
+
+        List<String> list = new ArrayList<>();
+        try (Connection connection = connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int columns = resultSet.getMetaData().getColumnCount();
+            System.out.println(columns);
+            // speichern eines strauses in eine liste (später für die berechnen der anzahl)
+            for(int i = 1; i <= columns; i++){
+                String str = resultSet.getString(i);
+                list.add(str);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        System.out.println(list);
     }
 
 
-    //
     public List<Bouquet> queryAllBouquets() {
         String SQL = "SELECT * FROM bouquets;";
 
         List<Bouquet> bouquetList = new LinkedList<>();
-
 
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
@@ -201,6 +214,7 @@ public class FlowershopDAO {
 
     }
 
+
     // diese Funktion wird immer dann aufgerufen wenn es weniger oder Mehr Blumen werden, oder wenn ein neuer
     // Strauß erstellt wird. Sie berechnet die Anzahl der Sträuße aus
     public void updateBouquet() {
@@ -233,32 +247,22 @@ public class FlowershopDAO {
         }
     }
 
-    public void addFlowerColumnToBouquetTable(String columnName) {
-
-        String alterPart1 = "ALTER TABLE bouquets ADD ";
-        String alterPart2 = columnName + " INTEGER;";
-        String SQL = alterPart1 + alterPart2;
+    public void addComposition(int flowerID, int amount, int bouquetID) {
+        String SQL = "INSERT INTO compositions(flower, amount, bouquet) VALUES (?, ?, ?)";
 
         try (Connection connection = connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setInt(1, flowerID);
+            preparedStatement.setInt(2, amount);
+            preparedStatement.setInt(3, bouquetID);
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
     }
 
-    public void deleteFlowerColumnFromBouquetTable(String columnName) {
-        String part1 = "ALTER TABLE bouquets DROP COLUMN ";
-        String part2 = ";";
-        String SQL = part1 + columnName + part2;
-
-        try (Connection connection = connect()){
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    public void deleteComposition(String columnName) {
+        
     }
 
     public List<String> getFlowerNames() {
@@ -275,7 +279,6 @@ public class FlowershopDAO {
                 String name = resultSet.getString(1);
                 flowerList.add(name);
             }
-            System.out.println(flowerList);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

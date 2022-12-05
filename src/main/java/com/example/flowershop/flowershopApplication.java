@@ -17,6 +17,7 @@ public class flowershopApplication extends Application {
         //flowershopDAO.addFlowerColumnToBouquetTable("kamille");
         //flowershopDAO.addFlowerColumnToBouquetTable("löwenzahn");
         //flowershopDAO.deleteFlowerColumnFromBouquetTable("Rose");
+        //flowershopDAO.getBouquet(1);
 
         //flowershopDAO.insertBouquet();
 

@@ -3,12 +3,12 @@ package com.example.flowershop;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.text.DecimalFormat;
 
 public class AddFlowerController {
 
@@ -82,11 +82,6 @@ public class AddFlowerController {
 
     @FXML
     private void save(){
-        // TODO
-        // sell price must be 20% over purchase price
-        // int a = purchasePrice / 100 * 20
-        // if a + purchasePrice > sellPrice --> error
-
         String name = nameField.getText().trim();
         String description = descriptionField.getText().trim();
         String purchasePrice = purchasePriceField.getText();
@@ -95,13 +90,26 @@ public class AddFlowerController {
 
         everythingCorrect = true;
 
+        // check for empty fields
         check(name, nameText);
         check(description, descriptionText);
         check(purchasePrice, purchasePriceText);
         check(sellPrice, sellPriceText);
 
+        // something is not entered
         if (!everythingCorrect) {
             return;
+        } else {
+            // check for sell price 20% above purchase price
+            float purchasePriceFloat = Float.parseFloat(purchasePriceField.getText());
+            float sellPriceFloat = Float.parseFloat(sellPriceField.getText());
+
+            purchasePriceFloat = purchasePriceFloat * 0.2f + purchasePriceFloat;
+
+            if (!(sellPriceFloat >= purchasePriceFloat)) {
+                showAlert(purchasePriceFloat);
+                return;
+            }
         }
 
         int amount;
@@ -116,7 +124,7 @@ public class AddFlowerController {
 
         FlowershopDAO flowershopDAO = new FlowershopDAO();
         flowershopDAO.insertFlower(flower);
-        flowershopDAO.addFlowerColumnToBouquetTable(flower.getName());
+        //flowershopDAO.addFlowerColumnToCompositionsTable(flower.getName());
         this.flowershopController.initialize();
 
         System.out.println("saved flower");
@@ -166,5 +174,17 @@ public class AddFlowerController {
 
     public void setController(FlowershopController flowershopController) {
         this.flowershopController = flowershopController ;
+    }
+
+    private void showAlert(float price){
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.getButtonTypes().add(ok);
+        alert.setTitle("Invalid sell price");
+        alert.setContentText("Sell price has to be at least 20% above purchase price.\nMinimum for this flower" +
+                " is currently " + df.format(price) + "€");
+        alert.showAndWait();
     }
 }

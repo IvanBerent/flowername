@@ -122,9 +122,22 @@ public class FlowershopController {
         stage.show();
     }
 
+
     public void addBouquet() throws IOException {
+        /*
         FXMLLoader fxmlLoader = new FXMLLoader(flowershopApplication.class.getResource("addBouquetDialog.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 500, 600);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Add Bouquet");
+        stage.show();
+
+         */
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("addBouquetDialog.fxml"));
+        Parent root = (Parent)fxmlLoader.load();
+        AddBouquetController addBouquetController = fxmlLoader.<AddBouquetController>getController();
+        addBouquetController.setController(this);
+        Scene scene = new Scene(root, 500, 600);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Add Bouquet");

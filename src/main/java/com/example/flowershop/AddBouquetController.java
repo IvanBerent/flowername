@@ -12,6 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class AddBouquetController {
 
     @FXML
@@ -25,9 +29,6 @@ public class AddBouquetController {
 
     @FXML
     private Text descText;
-
-    @FXML
-    private TextField purchasePriceField;
 
     @FXML
     private TextField sellPriceField;
@@ -45,15 +46,16 @@ public class AddBouquetController {
     private Button addFlowerBtn;
 
     @FXML
-    private Button saveBtn;
-
-    @FXML
     private Button cancelBtn;
 
     @FXML
     private ComboBox<String> comboBox;
 
+    @FXML
+    private FlowershopController flowershopController;
+
     boolean everythingCorrect;
+
 
     FlowershopDAO flowershopDAO = new FlowershopDAO();
 
@@ -65,17 +67,6 @@ public class AddBouquetController {
 
         comboBox.setItems(observableList);
         comboBox.getSelectionModel().select(0);
-
-
-        // regex for purchase price field allowing only one dot and only two numbers after dot
-        purchasePriceField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*\\.?\\d{0,2}")){
-                    purchasePriceField.setText(oldValue);
-                }
-            }
-        });
 
         // regex for sell price field allowing only one dot and only two numbers after dot
         sellPriceField.textProperty().addListener(new ChangeListener<String>() {
@@ -100,10 +91,33 @@ public class AddBouquetController {
         check(description, descText);
         check(sellPrice, sellPriceText);
 
-        if (everythingCorrect){
-            System.out.println("saved boquet");
+        if (!everythingCorrect){
+            return;
         }
 
+        // remove button from node list
+        int nodes = scrollPaneContent.getChildren().size();
+
+        // content list [[flowername, amount]]
+        List<List<String>> contentList = new ArrayList<>();
+        scrollPaneContent.getChildren().remove(nodes - 1);
+        // go through scrollpane content and get the content of the hboxes (String, String) -> (combobox, TextField)
+        for (int i = 0; i < scrollPaneContent.getChildren().size(); i++){
+            HBox hBox = (HBox) scrollPaneContent.getChildren().get(i);
+
+            // get the values
+            ComboBox<String> comboBox = (ComboBox<String>) hBox.getChildren().get(0);
+            TextField amountField = (TextField) hBox.getChildren().get(1);
+
+            String comboboxValue = comboBox.getValue();
+            String amountText = amountField.getText();
+
+            List<String> addElement = new ArrayList<>();
+            addElement.add(comboboxValue);
+            addElement.add(amountText);
+            contentList.add(addElement);
+        }
+        scrollPaneContent.getChildren().add(addFlowerBtn);
     }
 
     public void cancel() {
@@ -124,6 +138,7 @@ public class AddBouquetController {
         comboBox.setItems(observableList);
         comboBox.getSelectionModel().select(0);
 
+        //todo regex only ints
         TextField amountField = new TextField();
         amountField.setPromptText("Amount");
 
@@ -138,5 +153,9 @@ public class AddBouquetController {
         } else {
             text.setFill(Color.BLACK);
         }
+    }
+
+    public void setController(FlowershopController flowershopController) {
+        this.flowershopController = flowershopController ;
     }
 }
